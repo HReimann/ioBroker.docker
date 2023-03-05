@@ -32,6 +32,10 @@ RUN apt-get update && apt-get install -y \
     udev \
     wget \
     # Install node
+    && chmod 777 /opt/scripts/ \
+    && chmod 777 /opt/userscripts/ \
+    && chmod +x /opt/scripts/*.sh \
+    && chmod +x /opt/userscripts/*.sh \
     && curl -sL https://deb.nodesource.com/setup_16.x | bash \
     && apt-get update && apt-get install -y nodejs \
     # Install node-gyp
@@ -68,10 +72,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN chmod 777 /opt/scripts/ \
-    && chmod 777 /opt/userscripts/ \
-    && chmod +x /opt/scripts/*.sh \
-    && chmod +x /opt/userscripts/*.sh \
+
 
 # Setting up default ENVs
 ENV DEBIAN_FRONTEND="teletype" \

@@ -1,17 +1,18 @@
 FROM debian:bullseye-slim
 
-LABEL org.opencontainers.image.title="Official ioBroker Docker Image" \
-      org.opencontainers.image.description="Officical Docker image for ioBroker smarthome software (https://www.iobroker.net)" \
+LABEL org.opencontainers.image.title="ioBroker Docker Image" \
+      org.opencontainers.image.description="cker image for ioBroker smarthome software (https://www.iobroker.net)" \
       org.opencontainers.image.documentation="https://github.com/buanet/ioBroker.docker#readme" \
-      org.opencontainers.image.authors="André Germann <info@buanet.de>" \
-      org.opencontainers.image.url="https://github.com/buanet/ioBroker.docker" \
-      org.opencontainers.image.source="https://github.com/buanet/ioBroker.docker" \
+      org.opencontainers.image.authors="HR 1.TRY" \
+      org.opencontainers.image.url="https://github.com//ioBroker.docker" \
+      org.opencontainers.image.source="https://github.com//ioBroker.docker" \
       org.opencontainers.image.base.name="docker.io/library/debian:bullseye-slim" \
       org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.created="${DATI}"
 
 ENV DEBIAN_FRONTEND noninteractive
-
+COPY scripts /opt/scripts
+COPY userscripts /opt/userscripts
 # Install prerequisites (including node) and generating locales
 RUN apt-get update && apt-get install -y \
     apt-utils \
@@ -39,17 +40,13 @@ RUN apt-get update && apt-get install -y \
     && sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
     && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
     && locale-gen
-
-# Create directorys and copy scripts
-COPY scripts /opt/scripts
-COPY userscripts /opt/userscripts
-RUN chmod 777 /opt/scripts/ \
+    # Create directorys and copy scripts
+    && chmod 777 /opt/scripts/ \
     && chmod 777 /opt/userscripts/ \
     && chmod +x /opt/scripts/*.sh \
     && chmod +x /opt/userscripts/*.sh
-
-# Prepare and install ioBroker
-RUN mkdir -p /opt/scripts/.docker_config/ \
+    # Prepare and install ioBroker
+    && mkdir -p /opt/scripts/.docker_config/ \
     && echo "starting" > /opt/scripts/.docker_config/.healthcheck \
     && echo "${VERSION}" > /opt/scripts/.docker_config/.thisisdocker \
     && echo $(hostname) > /opt/.firstrun \

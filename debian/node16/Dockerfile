@@ -11,9 +11,9 @@ LABEL org.opencontainers.image.title="ioBroker Docker Image" \
       org.opencontainers.image.created="${DATI}"
 
 ENV DEBIAN_FRONTEND noninteractive
+# Create directorys and copy scripts
 COPY scripts /opt/scripts
 COPY userscripts /opt/userscripts
-
 # Install prerequisites (including node) and generating locales
 RUN apt-get update && apt-get install -y \
     apt-utils \
@@ -32,10 +32,6 @@ RUN apt-get update && apt-get install -y \
     udev \
     wget \
     # Install node
-    && chmod 777 /opt/scripts/ \
-    && chmod 777 /opt/userscripts/ \
-    && chmod +x /opt/scripts/*.sh \
-    && chmod +x /opt/userscripts/*.sh \
     && curl -sL https://deb.nodesource.com/setup_16.x | bash \
     && apt-get update && apt-get install -y nodejs \
     # Install node-gyp
@@ -43,7 +39,7 @@ RUN apt-get update && apt-get install -y \
     # Generating locales
     && sed -i 's/^# *\(de_DE.UTF-8\)/\1/' /etc/locale.gen \
     && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
-    && locale-gen \
+    && locale-gen \ 
     # Prepare and install ioBroker
     && mkdir -p /opt/scripts/.docker_config/ \
     && echo "starting" > /opt/scripts/.docker_config/.healthcheck \
@@ -70,8 +66,12 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /root/.cache/* /root/.npm/* \
     && rm -rf /var/lib/apt/lists/*
-# Create directorys and copy scripts
 
+
+RUN chmod 777 /opt/scripts/ \
+    && chmod 777 /opt/userscripts/ \
+    && chmod +x /opt/scripts/*.sh \
+    && chmod +x /opt/userscripts/*.sh \
 
 # Setting up default ENVs
 ENV DEBIAN_FRONTEND="teletype" \
